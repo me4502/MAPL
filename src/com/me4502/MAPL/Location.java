@@ -150,4 +150,8 @@ public class Location {
 	public Location clone() {
 		return new Location(this);
 	}
+
+	public Vector toVector() {
+		return new Vector(coordinates);
+	}
 }

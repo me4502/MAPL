@@ -99,4 +99,17 @@ public class Vector {
 	public Vector clone() {
 		return new Vector(this);
 	}
+
+	public Location toLocation() {
+		return new Location(coordinates);
+	}
+
+	public Vector relative(Location location) {
+		Vector vec = new Vector(this);
+		for(int i = 0; i < getDimensions(); i++) {
+			vec.setPoint(i, location.getPoint(i) - getPoint(i));
+		}
+
+		return vec;
+	}
 }
