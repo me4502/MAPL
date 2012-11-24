@@ -1,15 +1,19 @@
 package com.me4502.MAPL;
 
-public class Location {
+public class Location implements Cloneable {
 
 	double[] coordinates;
 
+	public double[] getCoordinates() {
+		return coordinates;
+	}
+
 	public Location(double... coordinate) {
-		coordinates = coordinate;
+		coordinates = coordinate.clone();
 	}
 
 	public Location(Location location) {
-		coordinates = location.coordinates;
+		coordinates = location.coordinates.clone();
 	}
 
 	public Location add(Vector vector) {
