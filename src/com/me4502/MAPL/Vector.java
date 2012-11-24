@@ -1,16 +1,16 @@
 package com.me4502.MAPL;
 
 
-public class Vector {
+public class Vector implements Cloneable {
 
 	double[] coordinates;
 
 	public Vector(double... coordinate) {
-		coordinates = coordinate;
+		coordinates = coordinate.clone();
 	}
 
 	public Vector(Vector vector) {
-		coordinates = vector.coordinates;
+		coordinates = vector.coordinates.clone();
 	}
 
 	@Override
