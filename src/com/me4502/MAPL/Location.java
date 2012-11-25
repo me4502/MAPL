@@ -126,7 +126,7 @@ public class Location implements Cloneable {
 		if(location.getDimensions() == getDimensions()) {
 			double result = 0;
 			for(int i = 0; i < getDimensions(); i++) {
-				result += Math.pow(getPoint(i) + location.getPoint(i), 2);
+				result += Math.pow(getPoint(i) - location.getPoint(i), 2);
 			}
 
 			return result;
