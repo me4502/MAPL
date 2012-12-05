@@ -112,4 +112,18 @@ public class Vector implements Cloneable {
 
 		return vec;
 	}
+
+	public double getLength() {
+
+		return Math.sqrt(getLengthSquared());
+	}
+
+	public double getLengthSquared() {
+
+		double length = 0;
+		for(int i = 0; i < getDimensions(); i++)
+			length += getPoint(i) * getPoint(i);
+
+		return length;
+	}
 }
