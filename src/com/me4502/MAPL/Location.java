@@ -1,5 +1,14 @@
 package com.me4502.MAPL;
 
+/**
+ * The location class.
+ * 
+ * Generally used to symbolize absolute locations, for example a sprite's
+ * position. For relative positions, see {@link Vector}
+ * 
+ * @author Me4502
+ * 
+ */
 public class Location implements Cloneable {
 
     double[] coordinates;
@@ -19,7 +28,7 @@ public class Location implements Cloneable {
     public Location add(Vector vector) {
         try {
             for (int dim = 0; dim < getDimensions(); dim++) {
-                this.setPoint(dim, getPoint(dim) + vector.getPoint(dim));
+                setPoint(dim, getPoint(dim) + vector.getPoint(dim));
             }
 
             return this;
@@ -31,7 +40,7 @@ public class Location implements Cloneable {
     public Location multiply(Vector vector) {
         try {
             for (int dim = 0; dim < getDimensions(); dim++) {
-                this.setPoint(dim, getPoint(dim) * vector.getPoint(dim));
+                setPoint(dim, getPoint(dim) * vector.getPoint(dim));
             }
 
             return this;
@@ -43,7 +52,7 @@ public class Location implements Cloneable {
     public Location divide(Vector vector) {
         try {
             for (int dim = 0; dim < getDimensions(); dim++) {
-                this.setPoint(dim, getPoint(dim) / vector.getPoint(dim));
+                setPoint(dim, getPoint(dim) / vector.getPoint(dim));
             }
 
             return this;
@@ -55,7 +64,7 @@ public class Location implements Cloneable {
     public Location subtract(Vector vector) {
         try {
             for (int dim = 0; dim < getDimensions(); dim++) {
-                this.setPoint(dim, getPoint(dim) - vector.getPoint(dim));
+                setPoint(dim, getPoint(dim) - vector.getPoint(dim));
             }
 
             return this;
