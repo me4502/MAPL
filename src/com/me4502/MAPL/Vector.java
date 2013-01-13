@@ -1,5 +1,14 @@
 package com.me4502.MAPL;
 
+/**
+ * The vector class.
+ * 
+ * Generally used to symbolize relative locations, for example a velocity. For
+ * absolute positions, see {@link Location}
+ * 
+ * @author Me4502
+ * 
+ */
 public class Vector implements Cloneable {
 
     double[] coordinates;

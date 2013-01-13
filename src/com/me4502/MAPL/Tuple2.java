@@ -1,7 +1,9 @@
 package com.me4502.MAPL;
 
-/*
- * Tuple2 - Copied from CraftBook, Copyright Lymia
+/**
+ * Tuple2 - Copied from CraftBook. Stores 2 objects.
+ * 
+ * @author Lymia
  */
 public class Tuple2<A, B> {
 
