@@ -110,7 +110,7 @@ public class Location implements Cloneable {
 
 	public int getRoundPoint(int dimension) throws InvalidDimensionException {
 		try {
-			return (int) coordinates[dimension];
+			return (int) Math.round(coordinates[dimension]);
 		} catch (Exception e) {
 			throw new InvalidDimensionException("Location does not contain this dimension!");
 		}

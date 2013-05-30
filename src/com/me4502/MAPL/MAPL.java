@@ -12,6 +12,8 @@ public abstract class MAPL {
 
 	private static MAPL instance;
 
+	private MAPLProgram program;
+
 	public MAPL() {
 		instance = this;
 	}
@@ -30,4 +32,14 @@ public abstract class MAPL {
 	public void setGUIRenderer(GUIRenderer renderer) {
 		guiRenderer = renderer;
 	}
-} 
+
+	public MAPLProgram getProgram() {
+
+		return program;
+	}
+
+	public void setProgram(MAPLProgram program) {
+
+		this.program = program;
+	}
+}
