@@ -6,6 +6,7 @@ public abstract class MAPLGui {
 	 * Identifier. Used to allow the GUI renderer to tell apart special types of a gui. Eg, buttons using special images.
 	 */
 	private String identifier = "";
+	private boolean visible = true;
 
 	public int x, y;
 
@@ -19,6 +20,25 @@ public abstract class MAPLGui {
 
 		this.x = x;
 		this.y = y;
+	}
+
+	/**
+	 * Check whether this GUI item is visible.
+	 * 
+	 * @return whether the GUI item is visible.
+	 */
+	public boolean isVisible() {
+
+		return visible;
+	}
+
+	/**
+	 * Set if the gui item is visible or not.
+	 * 
+	 * @param visible The gui items new visibility.
+	 */
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 	}
 
 	/**
@@ -36,9 +56,10 @@ public abstract class MAPLGui {
 	 * 
 	 * @param identifier The new identifier
 	 */
-	public void setIdentifier(String identifier) {
+	public MAPLGui setIdentifier(String identifier) {
 
 		this.identifier = identifier;
+		return this;
 	}
 
 	/**
@@ -57,4 +78,13 @@ public abstract class MAPLGui {
 	 * @return If we care about the click.
 	 */
 	public abstract boolean onClick(int x, int y, int button);
+
+	/**
+	 * Checks whether the mouse is over this gui item or not.
+	 * 
+	 * @param x The mouse X coordinate
+	 * @param y The mouse Y coordinate
+	 * @return if the mouse is over
+	 */
+	public abstract boolean isMouseOver(int x, int y);
 }

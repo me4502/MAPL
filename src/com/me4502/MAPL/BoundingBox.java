@@ -1,6 +1,6 @@
 package com.me4502.MAPL;
 
-/***
+/**
  * BoundingBox
  * 
  * This class symbolizes a box that can be used for collision detection. As it
@@ -11,12 +11,22 @@ package com.me4502.MAPL;
  */
 public class BoundingBox {
 
-    public Vector minimum;
-    public Vector maximum;
+    private final Vector minimum;
+    private final Vector maximum;
 
     public BoundingBox(Vector min, Vector max) {
         minimum = min;
         maximum = max;
+    }
+
+    public Vector getMinimumPoint() {
+
+        return minimum;
+    }
+
+    public Vector getMaximumPoint() {
+
+        return maximum;
     }
 
     /**
