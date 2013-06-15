@@ -5,29 +5,26 @@ import org.newdawn.slick.SlickException;
 
 public class MAPLImage {
 
-	private int resolution;
 	private Image image;
 
 	public MAPLImage(Image image) {
 
 		this.image = image;
-		resolution = Math.min(image.getWidth(), image.getHeight());
 	}
 
 	public MAPLImage(String absolutePath) throws SlickException {
 
 		image = new Image(absolutePath, Image.FILTER_NEAREST);
-		resolution = Math.min(image.getWidth(), image.getHeight());
 	}
 
-	public void setResolution(int res) {
+	public int getWidth() {
 
-		resolution = res;
+		return image.getWidth();
 	}
 
-	public int getResolution() {
+	public int getHeight() {
 
-		return resolution;
+		return image.getHeight();
 	}
 
 	public Image getImage() {

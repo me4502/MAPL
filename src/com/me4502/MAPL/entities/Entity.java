@@ -11,6 +11,8 @@ public interface Entity {
 
 	public int getAge();
 
+	public boolean isValid();
+
 	public void render();
 
 	public void update();

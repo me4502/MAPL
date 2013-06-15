@@ -3,11 +3,15 @@ package com.me4502.MAPL.slick;
 import java.io.File;
 
 import com.me4502.MAPL.MAPL;
+import com.me4502.MAPL.rendering.RenderUtils;
+import com.me4502.MAPL.slick.rendering.SlickRenderUtils;
 
 public class SlickMAPL extends MAPL {
 
 	private File appDir;
+	SlickRenderUtils renderer;
 
+	@Override
 	public File getApplicationDirectory() {
 		if (appDir == null) {
 			appDir = getAppDir(getProgram().getProgramName().replace(" ", ""));
@@ -67,5 +71,12 @@ public class SlickMAPL extends MAPL {
 		if (s.contains("unix"))
 			return "linux";
 		return "linux";
+	}
+
+	@Override
+	public RenderUtils getRenderer() {
+		if(renderer == null)
+			renderer = new SlickRenderUtils();
+		return renderer;
 	}
 }

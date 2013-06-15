@@ -1,17 +1,15 @@
-package com.me4502.MAPL.slick.rendering;
+package com.me4502.MAPL.libgdx.rendering;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.newdawn.slick.Image;
-import org.newdawn.slick.SpriteSheet;
-
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.me4502.MAPL.MAPL;
-import com.me4502.MAPL.slick.SlickMAPL;
+import com.me4502.MAPL.libgdx.LibGDXMAPL;
 
 public class ImageManager {
 
@@ -30,7 +28,7 @@ public class ImageManager {
 	/**
 	 * Stores all loaded textures.
 	 */
-	private Map<String, MAPLImage> loadedTextures = new LinkedHashMap<String, MAPLImage>();
+	private Map<String, MAPLImage> loadedTextures = new HashMap<String, MAPLImage>();
 
 	/**
 	 * Stores image names to image path conversions.
@@ -79,7 +77,7 @@ public class ImageManager {
 				images.put(name.toUpperCase(), new ImageRegistration(f.getPath()));
 			} catch(Exception e) {
 				try {
-					File f = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), path);
+					File f = new File(((LibGDXMAPL) MAPL.inst()).getApplicationDirectory(), path);
 					if(!f.exists())
 						throw new FileNotFoundException();
 					System.err.println(f.getAbsolutePath());
@@ -117,7 +115,7 @@ public class ImageManager {
 				images.put(name.toUpperCase(), new ImageRegistration(f.getPath(), width, height, x, y));
 			} catch(Exception e) {
 				try {
-					File f = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), path);
+					File f = new File(((LibGDXMAPL) MAPL.inst()).getApplicationDirectory(), path);
 					if(!f.exists())
 						throw new FileNotFoundException();
 					System.err.println(f.getAbsolutePath());
@@ -147,11 +145,11 @@ public class ImageManager {
 	}
 
 	public int getGlTexture(String name) {
-		return getImage(name.toUpperCase()).getImage().getTexture().getTextureID();
+		return 0;//getImage(name.toUpperCase()).getImage().getTexture().getTextureID();
 	}
 
 	public void bindGlTexture(String name) {
-		getImage(name.toUpperCase()).getImage().getTexture().bind();
+		//getImage(name.toUpperCase()).getImage().getTexture().bind();
 	}
 
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation) {
@@ -162,15 +160,20 @@ public class ImageManager {
 		return draw(name,x,y,1f,1f,rotation,alpha);
 	}
 
+	private int baseImageScale = 16;
+
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation, float alpha) {
 		try {
 			MAPL.inst().getRenderer().setTextureState(true);
-			getImage(name.toUpperCase()).getImage().setAlpha(alpha);
-			if(rotation != 0)
-				getImage(name.toUpperCase()).getImage().setRotation(rotation);
-			getImage(name.toUpperCase()).getImage().setCenterOfRotation(getImage(name.toUpperCase()).getWidth()/2,getImage(name.toUpperCase()).getHeight()/2);
-			getImage(name.toUpperCase()).getImage().draw(x, y, scaleX * getImage(name.toUpperCase()).getWidth(), scaleY * getImage(name.toUpperCase()).getHeight());
-			getImage(name.toUpperCase()).getImage().setRotation(0);
+			//getImage(name.toUpperCase()).getImage().setAlpha(alpha);
+			//if(rotation != 0)
+			//	getImage(name.toUpperCase()).getImage().setRotation(rotation);
+			int res = baseImageScale;
+			if(baseImageScale != getImage(name.toUpperCase()).getResolution())
+				res = getImage(name.toUpperCase()).getResolution() / (getImage(name.toUpperCase()).getResolution() / baseImageScale);
+			//getImage(name.toUpperCase()).getImage().setCenterOfRotation(getImage(name.toUpperCase()).getResolution()/2,getImage(name.toUpperCase()).getResolution()/2);
+			//getImage(name.toUpperCase()).getImage().draw(x, y, scaleX * res, scaleY * res);
+			//getImage(name.toUpperCase()).getImage().setRotation(0);
 			MAPL.inst().getRenderer().setTextureState(false);
 			return true;
 		}
@@ -188,27 +191,32 @@ public class ImageManager {
 	 * @param height The amount of images vertically
 	 * @return
 	 */
-	public SpriteSheet getSpriteSheet(String path, int width, int height) {
+	public TextureAtlas getSpriteSheet(String path, int width, int height) {
 
 		try {
 			try {
 				URL url = this.getClass().getResource(path);
 				File f = new File(url.getFile());
 				System.err.println(f.getPath());
-				Image i = new Image(f.getPath(), Image.FILTER_NEAREST);
-				return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
+				Texture i = new Texture(f.getPath());
+				TextureAtlas atlas = new TextureAtlas();
+				return atlas;
 			}
 			catch(Exception e) {
 				try {
-					File f = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), path);
+					File f = new File(((LibGDXMAPL) MAPL.inst()).getApplicationDirectory(), path);
 					if(!f.exists())
 						throw new FileNotFoundException();
 					System.err.println(f.getAbsolutePath());
-					Image i = new Image(f.getAbsolutePath(), Image.FILTER_NEAREST);
-					return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
+					Texture i = new Texture(f.getAbsolutePath());
+					TextureAtlas atlas = new TextureAtlas();
+					return atlas;
+					//return new TextureAtlas(i, i.getWidth() / width, i.getHeight() / height);
 				} catch(Exception ee) {
-					Image i = new Image(path, Image.FILTER_NEAREST);
-					return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
+					Texture i = new Texture(path);
+					TextureAtlas atlas = new TextureAtlas();
+					return atlas;
+					//return new SpriteSheet(i, i.getWidth() / width, i.getHeight() / height);
 				}
 			}
 		}

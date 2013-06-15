@@ -90,8 +90,8 @@ public abstract class MAPLButton extends MAPLGui {
 
 	@Override
 	public boolean isMouseOver(int x, int y) {
-		if(x > this.x && x < this.x + width/2 * scaleX) {
-			if(y > this.y && y < this.y + height/2 * scaleY) {
+		if(x > this.x && x < this.x + width * scaleX) {
+			if(y > this.y && y < this.y + height * scaleY) {
 				return true;
 			}
 		}

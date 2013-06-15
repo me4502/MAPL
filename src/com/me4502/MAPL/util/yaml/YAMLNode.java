@@ -70,7 +70,7 @@ public class YAMLNode {
 	 */
 	@SuppressWarnings("unchecked")
 	public Object getProperty(String path) {
-		if (!path.contains(".")) {
+		if (!path.contains(".") || root.get(path) != null) {
 			Object val = root.get(path);
 			if (val == null) {
 				return null;
