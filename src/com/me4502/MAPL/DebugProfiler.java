@@ -2,6 +2,7 @@ package com.me4502.MAPL;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("unused")
 public abstract class DebugProfiler {
 
 	private int x = 0, y = 0;

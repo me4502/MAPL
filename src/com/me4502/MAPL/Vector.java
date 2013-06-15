@@ -140,4 +140,14 @@ public class Vector implements Cloneable {
 
 		return vec;
 	}
+
+	public Vector normalize() {
+
+		double length = getLength();
+
+		for(int i = 0; i < getDimensions(); i++)
+			setPoint(i, getPoint(i) / length);
+
+		return this;
+	}
 }
