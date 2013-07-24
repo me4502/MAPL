@@ -271,6 +271,44 @@ public class YAMLNode {
 	}
 
 	/**
+	 * Gets a long at a location. This will either return a long
+	 * or null. If the object at the particular location is not
+	 * actually a long, the default value will be returned. However, other
+	 * number types will be casted to a long.
+	 * 
+	 * @param path path to node (dot notation)
+	 * @return long or null
+	 */
+	public Long getLong(String path) {
+		Long o = castLong(getProperty(path));
+		if (o == null) {
+			return null;
+		} else {
+			return o;
+		}
+	}
+
+	/**
+	 * Gets a long at a location. This will either return a long
+	 * or the default value. If the object at the particular location is not
+	 * actually a long, the default value will be returned. However, other
+	 * number types will be casted to a long.
+	 * 
+	 * @param path path to node (dot notation)
+	 * @param def default value
+	 * @return long or default
+	 */
+	public Long getLong(String path, long def) {
+		Long o = castLong(getProperty(path));
+		if (o == null) {
+			if (writeDefaults) setProperty(path, def);
+			return def;
+		} else {
+			return o;
+		}
+	}
+
+	/**
 	 * Gets a double at a location. This will either return an double
 	 * or null. If the object at the particular location is not
 	 * actually a double, the default value will be returned. However, other
@@ -620,6 +658,22 @@ public class YAMLNode {
 			return null;
 		} else if (o instanceof Number) {
 			return ((Number) o).intValue();
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Casts a value to an integer. May return null.
+	 * 
+	 * @param o
+	 * @return
+	 */
+	private static Long castLong(Object o) {
+		if (o == null) {
+			return null;
+		} else if (o instanceof Number) {
+			return ((Number) o).longValue();
 		} else {
 			return null;
 		}

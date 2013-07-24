@@ -9,8 +9,6 @@ public interface RenderUtils {
 
 	public Rectangles rectangles();
 
-	public Lines lines();
-
 	public static interface Rectangles {
 
 		public void startRectangles(boolean filled);
@@ -21,6 +19,8 @@ public interface RenderUtils {
 
 		public void endRectangles();
 	}
+
+	public Lines lines();
 
 	public static interface Lines {
 
@@ -33,5 +33,31 @@ public interface RenderUtils {
 		public void drawThickLine(int x1, int y1, int x2, int y2, float width);
 
 		public void endLines();
+	}
+
+	public Pixels pixels();
+
+	public static interface Pixels {
+
+		public void startPixels();
+
+		public void drawPixel(int x, int y, float r, float g, float b, float a);
+
+		public void drawSinglePixel(int x, int y, float r, float g, float b, float a);
+
+		public void endPixels();
+	}
+
+	public Circles circles();
+
+	public static interface Circles {
+
+		public void startCircles();
+
+		public void drawCircle(int x, int y, double radius, boolean outline, float r, float g, float b, float a);
+
+		public void drawSingleCircle(int x, int y, double radius, boolean outline, float r, float g, float b, float a);
+
+		public void endCircles();
 	}
 }

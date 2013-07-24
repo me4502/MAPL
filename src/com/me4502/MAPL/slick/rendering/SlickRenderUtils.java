@@ -178,13 +178,132 @@ public class SlickRenderUtils implements RenderUtils {
 		}
 	}
 
-	@Override
-	public com.me4502.MAPL.rendering.RenderUtils.Rectangles rectangles() {
-		return SlickRenderUtils.Rectangles.instance;
+	public static class Pixels implements RenderUtils.Pixels {
+
+		private static boolean drawing = false;
+
+		protected static Pixels instance = new Pixels();
+
+		@Override
+		public void startPixels() {
+			try {
+				if(drawing)
+					throw new MAPLRenderException("Already Drawing Pixels!");
+				drawing = true;
+				GL11.glBegin(GL11.GL_POINTS);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void drawPixel(int x, int y, float r, float g, float b, float a) {
+
+			GL11.glColor4f(r, g, b, a);
+			GL11.glVertex2f(x, y);
+		}
+
+		@Override
+		public void drawSinglePixel(int x, int y, float r, float g, float b, float a) {
+
+			startPixels();
+			drawPixel(x,y,r,g,b,a);
+			endPixels();
+		}
+
+		@Override
+		public void endPixels() {
+
+			try {
+				if(!drawing)
+					throw new MAPLRenderException("Not Drawing Pixels!");
+				drawing = false;
+				GL11.glEnd();
+			} catch(MAPLRenderException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static class Circles implements RenderUtils.Circles {
+
+		private static boolean drawing = false;
+
+		protected static Circles instance = new Circles();
+
+		@Override
+		public void startCircles() {
+			try {
+				if(drawing)
+					throw new MAPLRenderException("Already Drawing Circles!");
+				drawing = true;
+				GL11.glBegin(GL11.GL_TRIANGLE_FAN);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void drawCircle(int x, int y, double radius, boolean outline, float r, float g, float b, float a) {
+
+			//if(outline) { TODO do this
+			//	drawCircle(x,y,radius,outline,r,g,b,a);
+			//}
+
+			float angle;
+			double x2, y2;
+
+			GL11.glColor4f(r,g,b,a);
+			GL11.glVertex2f(x,y);
+
+			GL11.glTexCoord2d(0.5, 0.5);
+
+			double seg = 2*Math.PI / 45;
+			for(angle = 0; angle < 2 * Math.PI + seg; angle += seg) {
+				x2 = x + Math.sin(angle)*radius;
+				y2 = y + Math.cos(angle)*radius;
+				GL11.glVertex2d(x2,y2);
+			}
+		}
+
+		@Override
+		public void drawSingleCircle(int x, int y, double radius, boolean outline, float r, float g, float b, float a) {
+
+			startCircles();
+			drawCircle(x,y,radius,outline,r,g,b,a);
+			endCircles();
+		}
+
+		@Override
+		public void endCircles() {
+			try {
+				if(!drawing)
+					throw new MAPLRenderException("Not Drawing Circles!");
+				drawing = false;
+				GL11.glEnd();
+			} catch(MAPLRenderException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override
-	public com.me4502.MAPL.rendering.RenderUtils.Lines lines() {
-		return SlickRenderUtils.Lines.instance;
+	public Rectangles rectangles() {
+		return Rectangles.instance;
+	}
+
+	@Override
+	public Lines lines() {
+		return Lines.instance;
+	}
+
+	@Override
+	public Pixels pixels() {
+		return Pixels.instance;
+	}
+
+	@Override
+	public Circles circles() {
+		return Circles.instance;
 	}
 }

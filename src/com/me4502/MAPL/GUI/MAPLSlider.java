@@ -24,18 +24,16 @@ public abstract class MAPLSlider extends MAPLButton {
 	public boolean onDrag(int oldX, int oldY, int newX, int newY) {
 
 		if(!isVisible()) return false;
-		if(oldX > x && oldX < x + width/2 * scaleX) {
-			if(oldY > y && oldY < y + height/2 * scaleY) {
+		if(isMouseOver(oldX, oldY)) {
 
-				int difX = newX - x;
-				currentValue = (float)difX/(width-40) * maxValue;
-				if(currentValue < 0)
-					currentValue = 0f;
-				if(currentValue > maxValue)
-					currentValue = maxValue;
-				onChange(this);
-				return true;
-			}
+			int difX = newX - x;
+			currentValue = (float)difX/(width-40) * maxValue;
+			if(currentValue < 0)
+				currentValue = 0f;
+			if(currentValue > maxValue)
+				currentValue = maxValue;
+			onChange(this);
+			return true;
 		}
 		return false;
 	}

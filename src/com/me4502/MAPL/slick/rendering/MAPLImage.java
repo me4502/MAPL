@@ -7,6 +7,8 @@ public class MAPLImage {
 
 	private Image image;
 
+	private long lastDrawTime = 0;
+
 	public MAPLImage(Image image) {
 
 		this.image = image;
@@ -30,5 +32,15 @@ public class MAPLImage {
 	public Image getImage() {
 
 		return image;
+	}
+
+	public void setDrawTime() {
+
+		lastDrawTime = System.currentTimeMillis();
+	}
+
+	public long getLastDrawTime() {
+
+		return lastDrawTime;
 	}
 }

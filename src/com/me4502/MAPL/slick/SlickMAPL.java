@@ -1,10 +1,23 @@
 package com.me4502.MAPL.slick;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Label;
+import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+
+import javax.swing.JFrame;
+
+import org.newdawn.slick.CanvasGameContainer;
+import org.newdawn.slick.SlickException;
 
 import com.me4502.MAPL.MAPL;
 import com.me4502.MAPL.rendering.RenderUtils;
 import com.me4502.MAPL.slick.rendering.SlickRenderUtils;
+import com.me4502.MAPL.util.FileUtils;
+import com.me4502.MAPL.util.SystemUtils;
 
 public class SlickMAPL extends MAPL {
 
@@ -79,4 +92,137 @@ public class SlickMAPL extends MAPL {
 			renderer = new SlickRenderUtils();
 		return renderer;
 	}
+
+	public void setup(MAPLSlickProgram game, String title, int width, int height, boolean force) {
+
+		try {
+			System.out.println("Initializing MAPL!");
+			this.game = game;
+			game.load();
+
+			System.out.println("Initializing Game!");
+			final SlickGame sgame = new SlickGame(title);
+
+			System.out.println("Performing Initial Load Checks!");
+			JFrame frame = null;
+			frame = new JFrame(FileUtils.isInstalling() ? "Installing!" : "Loading!");
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.getContentPane().add(new Label(FileUtils.isInstalling() ? "Installing!" : "Loading!"), BorderLayout.CENTER);
+			frame.pack();
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			int w = frame.getSize().width;
+			int h = frame.getSize().height;
+			int fx = (dim.width-w)/2;
+			int fy = (dim.height-h)/2;
+			frame.setLocation(fx, fy);
+			frame.setAlwaysOnTop(true);
+			frame.setVisible(true);
+
+			System.out.println(MAPL.inst().getApplicationDirectory());
+			FileUtils.downloadNatives(force);
+
+			while (FileUtils.hasGotNatives == false) {
+				if(!frame.isVisible())
+					frame.setVisible(true);
+			}
+
+			System.out.println("Initial Setup Complete!");
+			System.out.println("Starting Game!");
+
+			frame.dispose();
+
+			System.setProperty("org.lwjgl.librarypath", MAPL.inst().getApplicationDirectory() + "/natives/" + SystemUtils.getOsString() + "");
+
+			gameFrame = new JFrame(title);
+			gameFrame.setSize(width, height);
+			gameFrame.setLocationRelativeTo(null);
+
+			app = new CanvasGameContainer(sgame);
+			if(MAPL.inst().getProgram().getConfiguration() != null) {
+				System.out.println("Setting Up Game Engine Configuration Values");
+				app.getContainer().setVSync(MAPL.inst().getProgram().getConfiguration().vSync);
+				boolean done = false;
+				int samples = MAPL.inst().getProgram().getConfiguration().antiAliasing;
+				while(done == false && samples > 0) {
+					try {
+						app.getContainer().setMultiSample(samples);
+						done = true;
+					} catch(Exception e){
+						samples--;
+					}
+				}
+				System.out.println("MSAA: " + samples);
+				app.getContainer().setVerbose(MAPL.inst().getProgram().getConfiguration().debug);
+				app.getContainer().setShowFPS(MAPL.inst().getProgram().getConfiguration().debug);
+				System.out.println("Finishing configuration Engine settings");
+			}
+			app.getContainer().setTargetFrameRate(targetFrames);
+			app.getContainer().setAlwaysRender(true);
+
+			gameFrame.add(app);
+			gameFrame.setResizable(true);
+
+			gameFrame.addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosing(WindowEvent e) {
+					sgame.closeRequested();
+					gameFrame.dispose();
+					app.getContainer().exit();
+					System.exit(0);
+				}
+			});
+			gameFrame.setVisible(true);
+			gameFrame.toFront();
+
+			System.out.println("Starting Game!");
+			app.start();
+		} catch (UnsatisfiedLinkError e) {
+			setup(game,title,width,height,true);
+		} catch (SlickException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+
+	public boolean getPaused() {
+		return paused;
+	}
+
+	public void setSpeedScale(int speed) {
+		this.speed = speed;
+	}
+
+	public int getSpeedScale() {
+		return speed;
+	}
+
+	/* Settings */
+	public int targetFrames = 120;
+	public boolean Fullscreen = false;
+	public boolean Resizable = false;
+
+	public String title = "Game Engine";
+
+	public int width = 612;
+	public int height = 384;
+	public int cenX = width / 2;
+	public int cenY = height / 2;
+
+	public int mouseX;
+	public int mouseY;
+
+	public MAPLSlickProgram game;
+
+	boolean hasInitialized = false;
+
+	public static JFrame gameFrame;
+
+	boolean paused = false;
+
+	public static CanvasGameContainer app;
+
+	private int speed = 1;
 }
