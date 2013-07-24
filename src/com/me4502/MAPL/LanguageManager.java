@@ -15,6 +15,7 @@ public class LanguageManager {
 
 	public boolean addLanguage(String name, String filename) {
 
+		System.out.println("Attempting langauge add: " + name);
 		Language lang;
 		try {
 			lang = new Language(filename);
@@ -28,7 +29,10 @@ public class LanguageManager {
 
 	public String translateString(String language, String string) {
 
-		return languages.get(language).lines.get(string);
+		String line = languages.get(language).lines.get(string);
+		if(line == null)
+			line = string;
+		return line;
 	}
 
 	public class Language {
@@ -39,6 +43,7 @@ public class LanguageManager {
 
 		private Language(String filename) throws MAPLException {
 
+			System.out.println("Initializing Language: " + filename);
 			file = new File(filename);
 			if(!file.exists()) {
 				URL url = MAPL.inst().getProgram().getClass().getResource(filename);

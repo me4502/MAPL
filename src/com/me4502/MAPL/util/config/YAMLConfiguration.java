@@ -20,6 +20,7 @@ public class YAMLConfiguration {
 
 		antiAliasing = config.getInt("anti-aliasing", 0);
 		vSync = config.getBoolean("enable-vsync", false);
+		debug = config.getBoolean("debug-mode", false);
 		language = config.getString("language", "en_US");
 
 		config.save();
@@ -30,6 +31,7 @@ public class YAMLConfiguration {
 		config.setProperty("anti-aliasing", antiAliasing);
 		config.setProperty("enable-vsync", vSync);
 		config.setProperty("language", language);
+		config.setProperty("debug-mode", debug);
 
 		config.save();
 	}

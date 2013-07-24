@@ -4,8 +4,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SpriteSheet;
@@ -55,6 +57,21 @@ public class ImageManager {
 		} catch(Exception e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public void clearUnusedImages() {
+
+		Iterator<Entry<String, MAPLImage>> iter = loadedTextures.entrySet().iterator();
+
+		while(iter.hasNext()) {
+
+			Entry<String, MAPLImage> text = iter.next();
+
+			if(System.currentTimeMillis() - text.getValue().getLastDrawTime() > 1000 * 20) {
+				iter.remove();
+				System.out.println("Unloading texture: " + text.getKey().toUpperCase());
+			}
 		}
 	}
 
@@ -165,16 +182,19 @@ public class ImageManager {
 	public boolean draw(String name, int x, int y, float scaleX, float scaleY, int rotation, float alpha) {
 		try {
 			MAPL.inst().getRenderer().setTextureState(true);
-			getImage(name.toUpperCase()).getImage().setAlpha(alpha);
+			MAPLImage image = getImage(name.toUpperCase());
+			image.getImage().setAlpha(alpha);
 			if(rotation != 0)
-				getImage(name.toUpperCase()).getImage().setRotation(rotation);
-			getImage(name.toUpperCase()).getImage().setCenterOfRotation(getImage(name.toUpperCase()).getWidth()/2,getImage(name.toUpperCase()).getHeight()/2);
-			getImage(name.toUpperCase()).getImage().draw(x, y, scaleX * getImage(name.toUpperCase()).getWidth(), scaleY * getImage(name.toUpperCase()).getHeight());
-			getImage(name.toUpperCase()).getImage().setRotation(0);
+				image.getImage().setRotation(rotation);
+			image.getImage().setCenterOfRotation(image.getWidth()/2,image.getHeight()/2);
+			image.getImage().draw(x, y, scaleX * image.getWidth(), scaleY * image.getHeight());
+			image.getImage().setRotation(0);
+			image.setDrawTime();
 			MAPL.inst().getRenderer().setTextureState(false);
 			return true;
 		}
 		catch(Exception e) {
+			System.err.println(name);
 			e.printStackTrace();
 			return false;
 		}
