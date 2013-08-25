@@ -1,7 +1,14 @@
 package com.me4502.MAPL;
 
+import java.io.Serializable;
 
-public abstract class Position {
+
+public abstract class Position implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5008892581509810840L;
 
 	double[] points;
 

@@ -6,6 +6,8 @@ public interface MAPLProgram {
 
 	public String getProgramName();
 
+	public String getProgramVersion();
+
 	public int getWindowWidth();
 
 	public int getWindowHeight();

@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import com.me4502.MAPL.MAPL;
+
 public class JarUtils {
 
 	/**
@@ -17,7 +19,7 @@ public class JarUtils {
 	 * @param defaultName The name of the file inside the jar's defaults folder
 	 * @param jarFile     The jarfile to search inside.
 	 */
-	public static void createDefaultConfiguration(File actual, String defaultName, String jarFile) {
+	public static void createDefaultConfiguration(File actual, String defaultName, String jarFile, boolean force) {
 
 		// Make parent directories
 		File parent = actual.getParentFile();
@@ -25,26 +27,39 @@ public class JarUtils {
 			parent.mkdirs();
 		}
 
-		if (actual.exists()) {
+		if (!force && actual.exists()) {
 			return;
 		}
 
 		InputStream input = null;
 		JarFile file = null;
+
 		try {
-			File jar = new File(com.me4502.MAPL.MAPL.class.getProtectionDomain().getCodeSource().getLocation().getPath(), jarFile);
-			System.out.println(jar.getAbsolutePath());
-			file = new JarFile(jar);
-			ZipEntry copy = file.getEntry(defaultName);
-			if (copy == null) {
-				file.close();
-				throw new FileNotFoundException();
-			}
-			input = file.getInputStream(copy);
-		} catch (Exception e) {
-			System.out.println("Unable to read default configuration: " + defaultName);
-			e.printStackTrace();
+			input = MAPL.inst().getProgram().getClass().getResource(defaultName).openStream();
+		} catch (Exception e1) {
 		}
+
+		if(input == null)
+			try {
+				input = MAPL.inst().getProgram().getClass().getResource("/" + defaultName).openStream();
+			} catch (Exception e1) {
+			}
+
+		if(input == null)
+			try {
+				File jar = new File(com.me4502.MAPL.MAPL.class.getProtectionDomain().getCodeSource().getLocation().getPath(), jarFile);
+				System.out.println(jar.getAbsolutePath());
+				file = new JarFile(jar);
+				ZipEntry copy = file.getEntry(defaultName);
+				if (copy == null) {
+					file.close();
+					throw new FileNotFoundException();
+				}
+				input = file.getInputStream(copy);
+			} catch (Exception e) {
+				System.out.println("Unable to read default configuration: " + defaultName);
+				e.printStackTrace();
+			}
 
 		if (input != null) {
 			FileOutputStream output = null;
@@ -63,7 +78,8 @@ public class JarUtils {
 			} finally {
 
 				try {
-					file.close();
+					if(file != null)
+						file.close();
 				} catch (IOException ignored) {
 				}
 

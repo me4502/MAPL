@@ -24,17 +24,6 @@ public class FileUtils {
 		return !os.exists();
 	}
 
-	public static void downloadNatives(boolean force) {
-		File os = new File(new File(MAPL.inst().getApplicationDirectory(), "natives/"), SystemUtils.getOsString());
-		if (!os.exists())
-			os.mkdirs();
-		if(new File(os, "natives.done").exists() && !force) {
-			hasGotNatives = true;
-			return;
-		}
-		downloadFiles("http://me4502.com/downloads/natives/" + SystemUtils.getOsString() + "/files.txt", os);
-	}
-
 	public static File getAppDir(String par0Str) {
 		System.out.println("Finding Application Directory: " + par0Str);
 		String s = System.getProperty("user.home", ".");

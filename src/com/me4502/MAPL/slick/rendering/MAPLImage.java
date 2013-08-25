@@ -16,7 +16,10 @@ public class MAPLImage {
 
 	public MAPLImage(String absolutePath) throws SlickException {
 
-		image = new Image(absolutePath, Image.FILTER_NEAREST);
+		try {
+			image = new Image(absolutePath, Image.FILTER_NEAREST);
+		}
+		catch(Exception e){}
 	}
 
 	public int getWidth() {

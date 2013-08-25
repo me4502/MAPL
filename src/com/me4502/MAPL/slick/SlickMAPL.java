@@ -1,9 +1,6 @@
 package com.me4502.MAPL.slick;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Label;
-import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -16,7 +13,6 @@ import org.newdawn.slick.SlickException;
 import com.me4502.MAPL.MAPL;
 import com.me4502.MAPL.rendering.RenderUtils;
 import com.me4502.MAPL.slick.rendering.SlickRenderUtils;
-import com.me4502.MAPL.util.FileUtils;
 import com.me4502.MAPL.util.SystemUtils;
 
 public class SlickMAPL extends MAPL {
@@ -45,27 +41,19 @@ public class SlickMAPL extends MAPL {
 			else
 				file = new File(s, new StringBuilder().append('.').append(par0Str).append('/').toString());
 		} else if (getOs().equalsIgnoreCase("macosx")) {
-			file = new File(s, new StringBuilder()
-			.append("Library/Application Support/").append(par0Str)
-			.toString());
+			file = new File(s, new StringBuilder().append("Library/Application Support/").append(par0Str).toString());
 		} else if (getOs().equalsIgnoreCase("solaris")) {
-			file = new File(s, new StringBuilder().append('.').append(par0Str)
-					.append('/').toString());
+			file = new File(s, new StringBuilder().append('.').append(par0Str).append('/').toString());
 		} else if (getOs().equalsIgnoreCase("linux")) {
-			file = new File(s, new StringBuilder().append(par0Str).append('/')
-					.toString());
+			file = new File(s, new StringBuilder().append(par0Str).append('/').toString());
 		} else {
-			file = new File(s, new StringBuilder().append(par0Str).append('/')
-					.toString());
+			file = new File(s, new StringBuilder().append(par0Str).append('/').toString());
 		}
 
-		if (!file.exists() && !file.mkdirs()) {
-			throw new RuntimeException(new StringBuilder()
-			.append("The working directory could not be created: ")
-			.append(file).toString());
-		} else {
+		if (!file.exists() && !file.mkdirs())
+			throw new RuntimeException(new StringBuilder().append("The working directory could not be created: ").append(file).toString());
+		else
 			return file;
-		}
 	}
 
 	protected String getOs() {
@@ -103,34 +91,7 @@ public class SlickMAPL extends MAPL {
 			System.out.println("Initializing Game!");
 			final SlickGame sgame = new SlickGame(title);
 
-			System.out.println("Performing Initial Load Checks!");
-			JFrame frame = null;
-			frame = new JFrame(FileUtils.isInstalling() ? "Installing!" : "Loading!");
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.getContentPane().add(new Label(FileUtils.isInstalling() ? "Installing!" : "Loading!"), BorderLayout.CENTER);
-			frame.pack();
-			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-			int w = frame.getSize().width;
-			int h = frame.getSize().height;
-			int fx = (dim.width-w)/2;
-			int fy = (dim.height-h)/2;
-			frame.setLocation(fx, fy);
-			frame.setAlwaysOnTop(true);
-			frame.setVisible(true);
-
-			System.out.println(MAPL.inst().getApplicationDirectory());
-			FileUtils.downloadNatives(force);
-
-			while (FileUtils.hasGotNatives == false) {
-				if(!frame.isVisible())
-					frame.setVisible(true);
-			}
-
-			System.out.println("Initial Setup Complete!");
 			System.out.println("Starting Game!");
-
-			frame.dispose();
-
 			System.setProperty("org.lwjgl.librarypath", MAPL.inst().getApplicationDirectory() + "/natives/" + SystemUtils.getOsString() + "");
 
 			gameFrame = new JFrame(title);
@@ -166,6 +127,8 @@ public class SlickMAPL extends MAPL {
 				@Override
 				public void windowClosing(WindowEvent e) {
 					sgame.closeRequested();
+					for(Window win : JFrame.getWindows())
+						win.dispose();
 					gameFrame.dispose();
 					app.getContainer().exit();
 					System.exit(0);

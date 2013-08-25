@@ -60,4 +60,17 @@ public interface RenderUtils {
 
 		public void endCircles();
 	}
+
+	public LineLoop lineLoops();
+
+	public static interface LineLoop {
+
+		public void startLineLoops();
+
+		public void drawLineLoops(int x, int y, double radius, float r, float g, float b, float a);
+
+		public void drawSingleLineLoops(int x, int y, double radius, float r, float g, float b, float a);
+
+		public void endLineLoops();
+	}
 }
