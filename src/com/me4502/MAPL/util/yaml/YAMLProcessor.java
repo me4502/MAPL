@@ -41,6 +41,7 @@ import org.yaml.snakeyaml.reader.UnicodeReader;
 import org.yaml.snakeyaml.representer.Represent;
 import org.yaml.snakeyaml.representer.Representer;
 
+import com.me4502.MAPL.MAPL;
 import com.me4502.MAPL.util.StringUtil;
 
 /**
@@ -78,7 +79,8 @@ public class YAMLProcessor extends YAMLNode {
 	public static final String LINE_BREAK = DumperOptions.LineBreak.getPlatformLineBreak().getString();
 	public static final char COMMENT_CHAR = '#';
 	protected final Yaml yaml;
-	protected final File file;
+	protected File file;
+	protected String internalFile;
 	protected String header = null;
 	protected YAMLFormat format;
 
@@ -102,6 +104,21 @@ public class YAMLProcessor extends YAMLNode {
 		yaml = new Yaml(new SafeConstructor(), representer, options);
 
 		this.file = file;
+	}
+
+	public YAMLProcessor(String internalFile, boolean writeDefaults, YAMLFormat format) {
+		super(new LinkedHashMap<String, Object>(), writeDefaults);
+		this.format = format;
+
+		DumperOptions options = new DumperOptions();
+		options.setIndent(4);
+		options.setDefaultFlowStyle(format.getStyle());
+		Representer representer = new FancyRepresenter();
+		representer.setDefaultFlowStyle(format.getStyle());
+
+		yaml = new Yaml(new SafeConstructor(), representer, options);
+
+		this.internalFile = internalFile;
 	}
 
 	public YAMLProcessor(File file, boolean writeDefaults) {
@@ -180,10 +197,12 @@ public class YAMLProcessor extends YAMLNode {
 	public boolean save() {
 		OutputStream stream = null;
 
-		File parent = file.getParentFile();
+		if(file != null) {
+			File parent = file.getParentFile();
 
-		if (parent != null) {
-			parent.mkdirs();
+			if (parent != null) {
+				parent.mkdirs();
+			}
 		}
 
 		try {
@@ -240,11 +259,17 @@ public class YAMLProcessor extends YAMLNode {
 	}
 
 	public InputStream getInputStream() throws IOException {
-		return new FileInputStream(file);
+		if(file != null)
+			return new FileInputStream(file);
+		else
+			return MAPL.inst().getProgram().getClass().getResource("/" + internalFile).openStream();
 	}
 
 	public OutputStream getOutputStream() throws IOException {
-		return new FileOutputStream(file);
+		if(file != null)
+			return new FileOutputStream(file);
+		else
+			return null;
 	}
 
 	/**

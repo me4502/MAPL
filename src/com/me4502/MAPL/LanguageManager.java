@@ -45,15 +45,22 @@ public class LanguageManager {
 
 			System.out.println("Initializing Language: " + filename);
 			file = new File(filename);
-			if(!file.exists()) {
-				URL url = MAPL.inst().getProgram().getClass().getResource(filename);
-				if(url != null)
-					file = new File(url.getFile());
-			}
 			if(!file.exists())
 				file = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), filename);
 			if(!file.exists())
 				file = new File("src/" + filename);
+			if(!file.exists()) {
+				URL url = MAPL.inst().getProgram().getClass().getResource(filename);
+				if(url != null)
+					file = new File(url.getPath());
+			}
+			if(!file.exists()) {
+				URL url = MAPL.inst().getProgram().getClass().getResource("/" + filename);
+				if(url != null)
+					file = new File(url.getPath());
+			}
+			if(!file.exists())
+				file = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), "bin/TowerDefense.jar!/" + filename);
 			if(!file.exists())
 				throw new MAPLException("Can't find Language File: " + filename);
 			loadLines();

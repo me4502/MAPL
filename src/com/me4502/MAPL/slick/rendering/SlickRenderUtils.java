@@ -3,6 +3,7 @@ package com.me4502.MAPL.slick.rendering;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
+import com.me4502.MAPL.MAPL;
 import com.me4502.MAPL.rendering.RenderUtils;
 import com.me4502.MAPL.util.exceptions.MAPLRenderException;
 
@@ -246,9 +247,11 @@ public class SlickRenderUtils implements RenderUtils {
 		@Override
 		public void drawCircle(int x, int y, double radius, boolean outline, float r, float g, float b, float a) {
 
-			//if(outline) { TODO do this
-			//	drawCircle(x,y,radius,outline,r,g,b,a);
-			//}
+			if(outline) {
+				endCircles();
+				MAPL.inst().getRenderer().lineLoops().drawSingleLineLoops(x, y, radius, r, g, b, 1.0f);
+				startCircles();
+			}
 
 			float angle;
 			double x2, y2;
@@ -287,6 +290,77 @@ public class SlickRenderUtils implements RenderUtils {
 		}
 	}
 
+	public static class LineLoop implements RenderUtils.LineLoop {
+
+		private static boolean drawing = false;
+
+		protected static LineLoop instance = new LineLoop();
+
+		@Override
+		public void startLineLoops() {
+			try {
+				if(drawing)
+					throw new MAPLRenderException("Already Drawing LineLoops!");
+				drawing = true;
+				GL11.glBegin(GL11.GL_LINE_LOOP);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		@Override
+		public void drawLineLoops(int x1, int y1, double radius, float r, float g, float b, float a) {
+
+			int seg = 45;
+			float theta = (float) (2 * 3.1415926 / seg);
+			float tangetial_factor = (float) Math.tan(theta);//calculate the tangential factor
+
+			float radial_factor = (float) Math.cos(theta);//calculate the radial factor
+
+			float x = (float) radius;//we start at angle = 0
+			float y = 0;
+
+			GL11.glColor4f(r, g, b, a);
+			for(int ii = 0; ii < seg; ii++) {
+				GL11.glVertex2f(x + x1, y + y1);//output vertex
+
+				//calculate the tangential vector
+				//remember, the radial vector is (x, y)
+				//to get the tangential vector we flip those coordinates and negate one of them
+				float tx = -y;
+				float ty = x;
+
+				//add the tangential vector
+				x += tx * tangetial_factor;
+				y += ty * tangetial_factor;
+
+				//correct using the radial factor
+				x *= radial_factor;
+				y *= radial_factor;
+			}
+		}
+
+		@Override
+		public void drawSingleLineLoops(int x, int y, double radius, float r, float g, float b, float a) {
+
+			startLineLoops();
+			drawLineLoops(x,y,radius,r,g,b,a);
+			endLineLoops();
+		}
+
+		@Override
+		public void endLineLoops() {
+			try {
+				if(!drawing)
+					throw new MAPLRenderException("Not Drawing LineLoops!");
+				drawing = false;
+				GL11.glEnd();
+			} catch(MAPLRenderException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 	@Override
 	public Rectangles rectangles() {
 		return Rectangles.instance;
@@ -305,5 +379,10 @@ public class SlickRenderUtils implements RenderUtils {
 	@Override
 	public Circles circles() {
 		return Circles.instance;
+	}
+
+	@Override
+	public LineLoop lineLoops() {
+		return LineLoop.instance;
 	}
 }

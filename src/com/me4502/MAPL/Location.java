@@ -1,5 +1,6 @@
 package com.me4502.MAPL;
 
+
 /**
  * The location class.
  * 
@@ -10,6 +11,11 @@ package com.me4502.MAPL;
  * 
  */
 public class Location extends Position implements Cloneable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2691241240703266884L;
 
 	public Location(double... points) {
 		this.points = points.clone();
