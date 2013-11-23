@@ -11,7 +11,8 @@ public abstract class MAPLScreen {
 
 	public abstract void render(int x, int y);
 
-	public abstract void update();
+	public void update() {
+	}
 
 	public abstract void onKeyPress(int key, char character);
 

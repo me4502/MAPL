@@ -1,15 +1,12 @@
 package com.me4502.MAPL;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public abstract class Position implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5008892581509810840L;
+public abstract class Position {
 
+	@JsonProperty("points")
 	double[] points;
 
 	public Position add(Position pos) {
