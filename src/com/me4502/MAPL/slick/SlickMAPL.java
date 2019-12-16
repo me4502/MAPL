@@ -140,6 +140,7 @@ public class SlickMAPL extends MAPL {
 			System.out.println("Starting Game!");
 			app.start();
 		} catch (UnsatisfiedLinkError e) {
+			System.err.println("Unsatiated Link Error!");
 			setup(game,title,width,height,true);
 		} catch (SlickException e1) {
 			e1.printStackTrace();

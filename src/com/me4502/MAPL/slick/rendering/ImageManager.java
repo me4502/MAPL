@@ -84,27 +84,11 @@ public class ImageManager {
 	 * @return true if successful
 	 */
 	public boolean registerImage(String name, String path) {
+		if(path == null) return false;
 		try {
 			if(images.containsKey(name.toUpperCase()))
 				return false;
-			try {
-				URL url = this.getClass().getResource(path);
-				File f = new File(url.getFile());
-				if(!f.exists())
-					throw new FileNotFoundException();
-				System.err.println(f.getPath());
-				images.put(name.toUpperCase(), new ImageRegistration(f.getPath()));
-			} catch(Exception e) {
-				try {
-					File f = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), path);
-					if(!f.exists())
-						throw new FileNotFoundException();
-					System.err.println(f.getAbsolutePath());
-					images.put(name.toUpperCase(), new ImageRegistration(f.getAbsolutePath()));
-				} catch(Exception ee) {
-					images.put(name.toUpperCase(), new ImageRegistration(path));
-				}
-			}
+			images.put(name.toUpperCase(), new ImageRegistration(getValidPath(path, false)));
 			System.out.println("Registering image: " + name + " at " + path + " with ID " + images.size());
 			return true;
 		} catch(Exception e) {
@@ -122,32 +106,45 @@ public class ImageManager {
 	 * @return true if successful
 	 */
 	public boolean registerSpriteSheetImage(String name, String path, int width, int height, int x, int y) {
+		if(path == null) return false;
 		try {
 			if(images.containsKey(name.toUpperCase()))
 				return false;
-			try {
-				URL url = this.getClass().getResource(path);
-				File f = new File(url.getFile());
-				if(!f.exists())
-					throw new FileNotFoundException();
-				System.err.println(f.getPath());
-				images.put(name.toUpperCase(), new ImageRegistration(f.getPath(), width, height, x, y));
-			} catch(Exception e) {
-				try {
-					File f = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), path);
-					if(!f.exists())
-						throw new FileNotFoundException();
-					System.err.println(f.getAbsolutePath());
-					images.put(name.toUpperCase(), new ImageRegistration(f.getAbsolutePath(), width, height, x, y));
-				} catch(Exception ee) {
-					images.put(name.toUpperCase(), new ImageRegistration(path, width, height, x, y));
-				}
-			}
+			images.put(name.toUpperCase(), new ImageRegistration(getValidPath(path, true), width, height, x, y));
 			System.out.println("Registering image: " + name + " at " + path + " with ID " + images.size());
 			return true;
 		} catch(Exception e) {
 			e.printStackTrace();
 			return false;
+		}
+	}
+
+	public String getValidPath(String path, boolean spritesheet) {
+		try {
+			URL url = this.getClass().getResource(path);
+			File f = new File(url.getFile());
+			if(f == null || !f.exists())
+				throw new FileNotFoundException();
+			return f.getPath();
+		} catch(Exception e) {
+			try {
+				File f = new File(((SlickMAPL) MAPL.inst()).getApplicationDirectory(), path);
+				if(f == null || !f.exists())
+					throw new FileNotFoundException();
+				return f.getAbsolutePath();
+			} catch(Exception ee) {
+				try {
+					if(!spritesheet)
+						new MAPLImage(path).getWidth();
+					else {
+						ImageManager.inst().getSpriteSheet(path, 1,1).getWidth();
+					}
+
+					return path;
+				} catch(Exception eee) {
+					return null;
+				}
+			}
 		}
 	}
 
@@ -233,7 +230,7 @@ public class ImageManager {
 			}
 		}
 		catch(Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 
 		return null;
